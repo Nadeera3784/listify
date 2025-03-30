@@ -10,21 +10,20 @@ import Auction from './models/Auction';
 import User from './models/User';
 import Bid from './models/Bid';
 
-// Routes
+
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import listingRoutes from './routes/listings';
 import auctionRoutes from './routes/auctions';
 import categoryRoutes from './routes/categories';
 
-// Initialize environment variables
 dotenv.config();
 
-// Create Express app
+
 const app = express();
 const server = http.createServer(app);
 
-// Set up Socket.IO
+
 export const io = new Server(server, {
   cors: {
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
@@ -56,7 +55,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Listify API' });
 });
 
-// Socket.IO connection handler
+
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
@@ -67,10 +66,7 @@ io.on('connection', (socket) => {
     try {
       const { auctionId, amount, userId } = data;
       
-      // In a real implementation, this would be done through a service
-      // For now, we broadcast the update directly
-      
-      // Get auction from database
+
       const auction = await Auction.findById(auctionId);
       
       if (!auction) {
