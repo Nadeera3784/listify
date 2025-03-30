@@ -1,0 +1,121 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  background-color: #ffffff;
+  color: #213547;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #4f46e5aa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #4f46e5aa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.read-the-docs {
+  color: #6b7280;
+}
+
+/* Bid Animation Keyframes */
+@keyframes flash-green {
+  0%, 100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  50% {
+    background-color: rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+  }
+}
+
+@keyframes winning-pulse {
+  0%, 100% {
+    background-color: rgba(79, 70, 229, 0.1);
+  }
+  50% {
+    background-color: rgba(79, 70, 229, 0.2);
+  }
+}
+
+.bid-flash {
+  animation: flash-green 1s ease-in-out;
+}
+
+.winner-highlight {
+  animation: winning-pulse 2s ease-in-out infinite;
+}
+
+/* Auction Countdown Effects */
+.text-shadow-lg {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes countdown-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.countdown-pulse {
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+/* Theme color overrides */
+/* These don't use !important to allow Tailwind classes to take precedence */
+.live-now {
+  background-color: #22c55e;
+  color: white;
+}
+
+.discount-tag {
+  background-color: #ef4444;
+  color: white;
+}
+
+.pagination-active {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.primary-button {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #4338ca;
+}
