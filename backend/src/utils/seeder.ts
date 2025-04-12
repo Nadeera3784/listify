@@ -6,10 +6,8 @@ import Listing from '../models/Listing';
 import Auction from '../models/Auction';
 import bcrypt from 'bcryptjs';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
 const connectDB = async () => {
   try {
     const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/listify';
@@ -66,13 +64,11 @@ const categories = [
   },
 ];
 
-// Function to seed the database
 const seedDatabase = async () => {
   try {
-    // Connect to database
+
     await connectDB();
     
-    // Clear existing data
     await User.deleteMany({});
     await Category.deleteMany({});
     await Listing.deleteMany({});
@@ -80,11 +76,8 @@ const seedDatabase = async () => {
     
     console.log('Database cleared');
     
-    // Create users
     const createdUsers = [];
     for (const user of users) {
-      // Create the user directly - let the User model handle the password hashing
-      // in its pre-save middleware
       const newUser = await User.create({
         name: user.name,
         email: user.email,

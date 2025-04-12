@@ -2,9 +2,6 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Category from '../models/Category';
 
-// @desc    Get all categories
-// @route   GET /api/categories
-// @access  Public
 export const getCategories = async (req: Request, res: Response): Promise<void> => {
   try {
     const categories = await Category.find().sort('name');
@@ -21,9 +18,6 @@ export const getCategories = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// @desc    Create a new category
-// @route   POST /api/categories
-// @access  Private/Admin
 export const createCategory = async (req: Request, res: Response): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -34,7 +28,6 @@ export const createCategory = async (req: Request, res: Response): Promise<void>
   try {
     const { name, slug } = req.body;
 
-    // Check if category exists
     const categoryExists = await Category.findOne({ 
       $or: [{ name }, { slug }] 
     });
@@ -47,7 +40,6 @@ export const createCategory = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Create category
     const category = await Category.create({
       name,
       slug,
@@ -65,9 +57,6 @@ export const createCategory = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// @desc    Get category by ID
-// @route   GET /api/categories/:id
-// @access  Public
 export const getCategoryById = async (req: Request, res: Response): Promise<void> => {
   try {
     const category = await Category.findById(req.params.id);
@@ -92,9 +81,6 @@ export const getCategoryById = async (req: Request, res: Response): Promise<void
   }
 };
 
-// @desc    Update category
-// @route   PUT /api/categories/:id
-// @access  Private/Admin
 export const updateCategory = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, slug } = req.body;
@@ -109,7 +95,6 @@ export const updateCategory = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    // Check for duplicate slug or name
     if (name || slug) {
       const duplicateCategory = await Category.findOne({
         $and: [
@@ -148,9 +133,6 @@ export const updateCategory = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// @desc    Delete category
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
 export const deleteCategory = async (req: Request, res: Response): Promise<void> => {
   try {
     const category = await Category.findById(req.params.id);

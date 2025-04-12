@@ -33,20 +33,16 @@ const EditAuctionPage = () => {
   });
 
   useEffect(() => {
-    // Fetch categories and auction data
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch categories
         const categoriesResponse = await categoriesAPI.getCategories();
         setCategories(categoriesResponse.data.categories || []);
         
-        // Fetch auction data
         if (id) {
           const auctionResponse = await auctionsAPI.getAuction(id);
           const auction = auctionResponse.data.auction;
           
-          // Check if user is authorized to edit this auction
           if (user && (auction.user._id === user._id || user.isAdmin)) {
             setFormData({
               title: auction.title,
@@ -58,7 +54,6 @@ const EditAuctionPage = () => {
               phoneNumber: auction.phoneNumber || ''
             });
             
-            // Store existing images
             setExistingImages(auction.imageUrls || []);
           } else {
             setError('You are not authorized to edit this auction');
@@ -112,7 +107,6 @@ const EditAuctionPage = () => {
         throw new Error('Auction ID is missing');
       }
       
-      // Validate form
       if (!formData.title || !formData.description || !formData.startingBid || !formData.category) {
         throw new Error('Please fill in all required fields');
       }
@@ -121,11 +115,9 @@ const EditAuctionPage = () => {
         throw new Error('Please provide at least one image');
       }
       
-      // If we have new files to upload, use createAuctionWithImages
       if (uploadedFiles.length > 0) {
         setUploadingImages(true);
         
-        // Create form data for multipart/form-data submission
         const formDataForSubmit = new FormData();
         formDataForSubmit.append('title', formData.title);
         formDataForSubmit.append('description', formData.description);
@@ -135,20 +127,16 @@ const EditAuctionPage = () => {
         formDataForSubmit.append('discount', formData.discount);
         formDataForSubmit.append('phoneNumber', formData.phoneNumber);
         
-        // Add existing images if any
         existingImages.forEach(url => {
           formDataForSubmit.append('existingImages', url);
         });
         
-        // Append all new files
         uploadedFiles.forEach(file => {
           formDataForSubmit.append('images', file);
         });
         
-        // Submit to API
         await auctionsAPI.updateAuctionWithImages(id, formDataForSubmit);
       } else {
-        // If only using existing images, use regular update
         const auctionData = {
           title: formData.title,
           description: formData.description,
@@ -163,7 +151,6 @@ const EditAuctionPage = () => {
         await auctionsAPI.updateAuction(id, auctionData);
       }
       
-      // Redirect to the auction page
       navigate(`/auction/${id}`);
     } catch (error: any) {
       setError(error.response?.data?.error || error.message || 'Failed to update auction');

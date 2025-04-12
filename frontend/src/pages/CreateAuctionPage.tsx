@@ -30,7 +30,6 @@ const CreateAuctionPage = () => {
   });
 
   useEffect(() => {
-    // Fetch categories
     const fetchCategories = async () => {
       try {
         const response = await categoriesAPI.getCategories();
@@ -72,7 +71,6 @@ const CreateAuctionPage = () => {
     setError(null);
 
     try {
-      // Validate form
       if (!formData.title || !formData.description || !formData.startingBid || !formData.category) {
         throw new Error('Please fill in all required fields');
       }
@@ -81,7 +79,6 @@ const CreateAuctionPage = () => {
         throw new Error('Please upload at least one image');
       }
       
-      // Create form data for multipart/form-data submission
       const formDataForSubmit = new FormData();
       formDataForSubmit.append('title', formData.title);
       formDataForSubmit.append('description', formData.description);
@@ -91,18 +88,14 @@ const CreateAuctionPage = () => {
       formDataForSubmit.append('status', formData.status);
       formDataForSubmit.append('discount', formData.discount);
       
-      // Append all files
       uploadedFiles.forEach(file => {
         formDataForSubmit.append('images', file);
       });
       
-      // Show uploading state
       setUploadingImages(true);
       
-      // Submit to API
       const response = await auctionsAPI.createAuctionWithImages(formDataForSubmit);
       
-      // Redirect to the new auction page
       navigate(`/auction/${response.data.auction._id}`);
     } catch (error: any) {
       setError(error.response?.data?.error || error.message || 'Failed to create auction');

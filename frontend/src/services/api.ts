@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Create axios instance
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 const api = axios.create({
@@ -10,7 +9,6 @@ const api = axios.create({
   },
 });
 
-// Add request interceptor to add auth token to headers
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('userToken');
@@ -22,14 +20,12 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Auth API calls
 export const authAPI = {
   register: (userData: any) => api.post('/auth/register', userData),
   login: (userData: any) => api.post('/auth/login', userData),
   getCurrentUser: () => api.get('/auth/me'),
 };
 
-// Listings API calls
 export const listingsAPI = {
   getListings: (params?: any) => api.get('/listings', { params }),
   getListing: (id: string) => api.get(`/listings/${id}`),
@@ -52,7 +48,6 @@ export const listingsAPI = {
   },
 };
 
-// Auctions API calls
 export const auctionsAPI = {
   getAuctions: (params?: any) => api.get('/auctions', { params }),
   getAuction: (id: string) => api.get(`/auctions/${id}`),
@@ -80,7 +75,6 @@ export const auctionsAPI = {
   },
 };
 
-// Categories API calls
 export const categoriesAPI = {
   getCategories: () => api.get('/categories'),
   getCategory: (id: string) => api.get(`/categories/${id}`),
@@ -89,7 +83,6 @@ export const categoriesAPI = {
   deleteCategory: (id: string) => api.delete(`/categories/${id}`),
 };
 
-// Users API calls
 export const usersAPI = {
   getUsers: (params?: any) => api.get('/users', { params }),
   getUser: (id: string) => api.get(`/users/${id}`),

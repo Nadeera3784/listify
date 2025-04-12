@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { User, AuthState } from '../types';
 import { authAPI } from '../services/api';
 
-// Define the context interface
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
@@ -10,7 +9,6 @@ interface AuthContextType extends AuthState {
   clearError: () => void;
 }
 
-// Create context with default values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: false,
@@ -21,10 +19,8 @@ const AuthContext = createContext<AuthContextType>({
   clearError: () => {},
 });
 
-// Custom hook to use the auth context
 export const useAuth = () => useContext(AuthContext);
 
-// Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AuthState>({
     user: null,
@@ -32,7 +28,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     error: null,
   });
 
-  // Check if user is logged in on mount
   useEffect(() => {
     const loadUser = async () => {
       const token = localStorage.getItem('userToken');
@@ -71,7 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
-  // Login function
   const login = async (email: string, password: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
@@ -101,7 +95,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Register function
   const register = async (name: string, email: string, password: string) => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
@@ -131,7 +124,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Logout function
   const logout = () => {
     localStorage.removeItem('userToken');
     setState({
@@ -141,7 +133,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // Clear error
   const clearError = () => {
     setState(prev => ({ ...prev, error: null }));
   };

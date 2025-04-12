@@ -18,7 +18,6 @@ const AuctionsPage = () => {
     initialPage,
   });
   
-  // Update URL when status changes
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     params.set('status', activeStatus);
@@ -28,14 +27,12 @@ const AuctionsPage = () => {
     setSearchParams(params);
   }, [activeStatus, setSearchParams, searchParams]);
   
-  // Update URL when page changes
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
     setSearchParams(params);
   }, [page, setSearchParams, searchParams]);
   
-  // Status tabs
   const statusTabs = [
     { id: 'ACCEPTING_BID', label: 'Live Auctions' },
     { id: 'SCHEDULED', label: 'Upcoming' },

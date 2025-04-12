@@ -5,7 +5,6 @@ import { auth } from '../middlewares/auth';
 
 const router = express.Router();
 
-// Register a new user
 router.post(
   '/register',
   [
@@ -18,7 +17,6 @@ router.post(
   registerUser
 );
 
-// Login user
 router.post(
   '/login',
   [
@@ -28,7 +26,6 @@ router.post(
   loginUser
 );
 
-// Get current user
 router.get('/me', auth, getUserProfile);
 
 export default router; 

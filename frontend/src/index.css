@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles can be added below */
 
-/* Light Theme Variables */
 :root {
   --background-color: #ffffff;
   --text-color: #213547;
@@ -103,7 +101,6 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
-/* Ensure dark mode inputs always have light styling */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: light;

@@ -11,40 +11,32 @@ const Pagination = ({
   onPageChange,
   className = ''
 }: PaginationProps) => {
-  // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = [];
     const maxPagesToShow = 5;
     
     if (totalPages <= maxPagesToShow) {
-      // If total pages is less than max pages to show, display all pages
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always include first page
       pages.push(1);
       
-      // Add middle pages
       const startPage = Math.max(2, currentPage - 1);
       const endPage = Math.min(totalPages - 1, currentPage + 1);
       
-      // Add ellipsis if needed
       if (startPage > 2) {
-        pages.push(-1); // Use -1 as an indicator for ellipsis
+        pages.push(-1); 
       }
       
-      // Add page numbers
       for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
       }
       
-      // Add ellipsis if needed
       if (endPage < totalPages - 1) {
-        pages.push(-2); // Use -2 as an indicator for ellipsis
+        pages.push(-2); 
       }
       
-      // Always include last page
       pages.push(totalPages);
     }
     

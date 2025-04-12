@@ -25,7 +25,7 @@ const ListingGrid = () => {
   
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setPage(1); // Reset to first page when category changes
+    setPage(1);
   };
   
   if (loading && listings.length === 0) {

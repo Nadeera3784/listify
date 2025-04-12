@@ -11,10 +11,8 @@ import { auth, admin } from '../middlewares/auth';
 
 const router = express.Router();
 
-// Get all categories
 router.get('/', getCategories);
 
-// Create a new category (admin only)
 router.post(
   '/',
   [
@@ -26,13 +24,10 @@ router.post(
   createCategory
 );
 
-// Get category by id
 router.get('/:id', getCategoryById);
 
-// Update category (admin only)
 router.put('/:id', [auth, admin], updateCategory);
 
-// Delete category (admin only)
 router.delete('/:id', [auth, admin], deleteCategory);
 
 export default router; 

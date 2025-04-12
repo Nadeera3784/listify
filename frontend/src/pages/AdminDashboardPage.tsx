@@ -72,7 +72,6 @@ const AdminDashboardPage = () => {
       setActionLoading(userId);
       await usersAPI.deleteUser(userId);
       
-      // Remove user from the list
       setUsers(prevUsers => prevUsers.filter(u => u._id !== userId));
     } catch (error: any) {
       setError(error.response?.data?.error || 'Failed to delete user');

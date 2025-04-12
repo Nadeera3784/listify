@@ -11,7 +11,6 @@ const AuctionSection = () => {
     limit: 4,
   });
   
-  // Status tabs
   const statusTabs = [
     { id: 'ACCEPTING_BID', label: 'Live Auctions' },
     { id: 'SCHEDULED', label: 'Upcoming' },

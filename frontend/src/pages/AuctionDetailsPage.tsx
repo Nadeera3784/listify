@@ -13,7 +13,6 @@ import {
   subscribeToAuctionCompletion
 } from '../services/socket';
 
-// Add NodeJS namespace declaration
 declare global {
   namespace NodeJS {
     interface Timeout {}
@@ -41,19 +40,15 @@ const AuctionDetailsPage = () => {
   const [completionMessage, setCompletionMessage] = useState('');
   const [timeSinceLastBid, setTimeSinceLastBid] = useState<number>(0);
 
-  // Calculate minimum bid amount (current bid + 1)
   const minBidAmount = auction ? auction.currentBid + 1 : 0;
 
-  // Check if current user is the owner of this auction
   const isOwner = user && auction && user._id === (typeof auction.user === 'string' 
     ? auction.user 
     : auction.user._id);
 
-  // Function to trigger phase changes based on inactivity
   const startBidPhaseTimer = () => {
     console.log("Starting bid phase timer");
     
-    // Clear any existing timers
     if (bidPhaseTimer) {
       clearTimeout(bidPhaseTimer as unknown as number);
       console.log("Cleared existing bid phase timer");
@@ -63,24 +58,18 @@ const AuctionDetailsPage = () => {
       console.log("Cleared existing bid timeout");
     }
     
-    // Reset countdown
     setBidPhaseCountdown(null);
     
-    // Set last bid time to now
     lastBidTime.current = new Date();
     
-    // If the auction is accepting bids and there have been bids placed
     if (auction && auction.status === 'ACCEPTING_BID' && auction.numberOfBids > 0) {
       console.log("Setting timeout for Going Once phase - 5 seconds");
       
-      // After 5 seconds of no new bids, go to "Going Once"
       const timeoutDuration = 5000; // Using 5 seconds for testing
       
       bidTimeout.current = setTimeout(() => {
         console.log("Timeout triggered, checking if we should go to Going Once");
         
-        // Get the current auction state from state (not closure)
-        // to ensure we're working with the most current data
         if (auction?.status === 'ACCEPTING_BID') {
           console.log("Starting Going Once countdown");
           // Start countdown for 5 seconds
@@ -96,14 +85,11 @@ const AuctionDetailsPage = () => {
               clearInterval(interval);
               console.log("Going Once countdown finished");
               
-              // Change to "Going Once" status
               if (user && id && user._id === (typeof auction.user === 'string' ? auction.user : auction.user._id)) {
                 console.log("User is owner, updating auction status to GOING_ONCE");
                 updateAuctionStatus(id, 'GOING_ONCE');
               } else if (user && id) {
                 console.log("User is not owner, simulating status change locally");
-                // If the current user is not the auction owner, we still need to update the UI
-                // We'll simulate the state change locally until we receive the socket update
                 setAuction(prevAuction => {
                   if (prevAuction) {
                     return {
@@ -116,15 +102,13 @@ const AuctionDetailsPage = () => {
               }
             }
           }, 1000);
-          
-          // Store the interval to clear it if needed
+        
           setBidPhaseTimer(interval as unknown as NodeJS.Timeout);
         }
       }, timeoutDuration);
     }
   };
 
-  // Function to transition from "Going Once" to "Going Twice"
   const handleGoingOncePhase = () => {
     console.log("Handling Going Once phase");
     
@@ -148,14 +132,11 @@ const AuctionDetailsPage = () => {
           clearInterval(interval);
           console.log("Going Twice countdown finished");
           
-          // Change to "Going Twice" status
           if (user && user._id === (typeof auction.user === 'string' ? auction.user : auction.user._id)) {
             console.log("User is owner, updating auction status to GOING_TWICE");
             updateAuctionStatus(id, 'GOING_TWICE');
           } else if (user) {
             console.log("User is not owner, simulating status change locally");
-            // If the current user is not the auction owner, we still need to update the UI
-            // We'll simulate the state change locally until we receive the socket update
             setAuction(prevAuction => {
               if (prevAuction) {
                 return {
@@ -173,7 +154,6 @@ const AuctionDetailsPage = () => {
     }
   };
 
-  // Function to transition from "Going Twice" to "SOLD"
   const handleGoingTwicePhase = () => {
     console.log("Handling Going Twice phase");
     
@@ -197,29 +177,22 @@ const AuctionDetailsPage = () => {
           clearInterval(interval);
           console.log("Sold countdown finished");
           
-          // Get latest auction state
           const currentAuction = auction;
           
-          // Change to "SOLD" status
           if (user && user._id === (typeof currentAuction.user === 'string' ? currentAuction.user : currentAuction.user._id)) {
             console.log("User is owner, updating auction status to SOLD");
-            // Find the highest bidder
             const highestBid = bids.length > 0 ? bids[0] : null;
             const winningUserId = highestBid ? (typeof highestBid.user === 'string' ? highestBid.user : highestBid.user._id) : null;
             
-            // Update auction status to SOLD
             if (winningUserId) {
               console.log(`Setting winner to: ${winningUserId}`);
               updateAuctionStatus(id, 'SOLD', winningUserId);
             } else {
-              // If no bids, mark as UNSOLD
               console.log("No bids, marking as UNSOLD");
               updateAuctionStatus(id, 'UNSOLD');
             }
           } else if (user) {
             console.log("User is not owner, simulating status change locally");
-            // If the current user is not the auction owner, we still need to update the UI
-            // We'll simulate the state change locally until we receive the socket update
             const highestBid = bids.length > 0 ? bids[0] : null;
             
             setAuction(prevAuction => {
@@ -255,34 +228,28 @@ const AuctionDetailsPage = () => {
       setError(null);
       
       try {
-        // Fetch auction details
+
         const auctionResponse = await auctionsAPI.getAuction(id);
         if (auctionResponse.data.success) {
           const auctionData = auctionResponse.data.auction;
           setAuction(auctionData);
-          setBidAmount(auctionData.currentBid + 1); // Set initial bid amount
+          setBidAmount(auctionData.currentBid + 1);
           
-          // Initialize last bid time
           lastBidTime.current = new Date();
           
-          // Fetch bids for this auction
           const bidsResponse = await auctionsAPI.getBids(id);
           if (bidsResponse.data.success) {
             setBids(bidsResponse.data.bids);
             
-            // If there are bids and status is ACCEPTING_BID, start the timer
             if (bidsResponse.data.bids.length > 0 && auctionData.status === 'ACCEPTING_BID') {
-              // Wait a bit for UI to settle then start the timer
               setTimeout(() => {
                 console.log("Starting bid phase timer after auction data load");
-                lastBidTime.current = new Date(); // Reset timer
+                lastBidTime.current = new Date(); 
                 startBidPhaseTimer();
               }, 1000);
             } else if (auctionData.status === 'GOING_ONCE') {
-              // Continue with the going once phase
               handleGoingOncePhase();
             } else if (auctionData.status === 'GOING_TWICE') {
-              // Continue with the going twice phase
               handleGoingTwicePhase();
             }
           }
@@ -298,7 +265,6 @@ const AuctionDetailsPage = () => {
     
     fetchAuctionData();
     
-    // Force start the timer after a short delay to ensure it runs
     const forceTimerStart = setTimeout(() => {
       console.log("Forcing timer start after component mount");
       if (auction && auction.status === 'ACCEPTING_BID' && auction.numberOfBids > 0) {
@@ -306,7 +272,6 @@ const AuctionDetailsPage = () => {
       }
     }, 3000);
     
-    // Subscribe to real-time updates and errors
     if (id) {
       subscribeToAuctionUpdates(id, handleAuctionUpdate);
       subscribeToBidErrors(id, (error) => {
@@ -314,7 +279,6 @@ const AuctionDetailsPage = () => {
         setBidLoading(false);
       });
       subscribeToAuctionCompletion(id, (status, winningUserId) => {
-        // Show a completion notification
         let message = '';
         if (status === 'SOLD') {
           const winner = bids.find(bid => 
@@ -344,7 +308,6 @@ const AuctionDetailsPage = () => {
     }
     
     return () => {
-      // Unsubscribe when component unmounts
       if (id) {
         unsubscribeFromAuctionUpdates(id);
       }
@@ -358,19 +321,16 @@ const AuctionDetailsPage = () => {
     };
   }, [id]);
 
-  // Effect to manage phase timers based on auction status changes
   useEffect(() => {
     if (!auction) return;
     
     if (auction.status === 'ACCEPTING_BID' && auction.numberOfBids > 0) {
-      // Start/restart the timer for the first phase
       startBidPhaseTimer();
     } else if (auction.status === 'GOING_ONCE') {
       handleGoingOncePhase();
     } else if (auction.status === 'GOING_TWICE') {
       handleGoingTwicePhase();
     } else if (auction.status === 'SOLD' || auction.status === 'UNSOLD') {
-      // Clear any timers when auction is sold
       if (bidPhaseTimer) {
         clearTimeout(bidPhaseTimer as unknown as number);
         setBidPhaseTimer(null);
@@ -383,7 +343,6 @@ const AuctionDetailsPage = () => {
     }
   }, [auction?.status]);
 
-  // Ensure the timer restarts when bids change
   useEffect(() => {
     console.log("Bids changed, bids count:", bids.length);
     if (auction && auction.status === 'ACCEPTING_BID' && bids.length > 0) {
@@ -392,12 +351,10 @@ const AuctionDetailsPage = () => {
     }
   }, [bids.length]);
 
-  // Add timer to track time since last bid
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
     
     if (auction && auction.status === 'ACCEPTING_BID' && auction.numberOfBids > 0) {
-      // Start a timer to update every second
       intervalId = setInterval(() => {
         if (lastBidTime.current) {
           const now = new Date();
@@ -414,7 +371,6 @@ const AuctionDetailsPage = () => {
     };
   }, [auction?.status, auction?.numberOfBids]);
   
-  // Reset timer when new bid is made
   useEffect(() => {
     if (bids.length > 0) {
       lastBidTime.current = new Date();
@@ -422,19 +378,14 @@ const AuctionDetailsPage = () => {
     }
   }, [bids.length]);
 
-  // Handle real-time auction updates
   const handleAuctionUpdate = (updatedAuction: Auction, newBid?: Bid) => {
-    // Always update the auction data
     setAuction(updatedAuction);
     
     if (newBid) {
-      // Show the animation effect for new bids
       setNewBidAnimation(true);
-      setTimeout(() => setNewBidAnimation(false), 1500); // Longer animation for better visibility
+      setTimeout(() => setNewBidAnimation(false), 1500);
       
-      // Update bids list
       setBids(prevBids => {
-        // Check if this bid already exists in the list (to avoid duplicates)
         const bidExists = prevBids.some(b => b._id === newBid._id);
         if (bidExists) {
           return prevBids;
@@ -442,17 +393,13 @@ const AuctionDetailsPage = () => {
         return [newBid, ...prevBids];
       });
       
-      // If this is a new bid during a countdown phase, reset the status to ACCEPTING_BID
-      // This allows the auction to continue accepting bids after someone outbids during a countdown
       if (updatedAuction.status === 'GOING_ONCE' || updatedAuction.status === 'GOING_TWICE') {
-        // Only the owner should update the auction status on the server
         if (id && user && user._id === (typeof updatedAuction.user === 'string' 
           ? updatedAuction.user 
           : updatedAuction.user._id)) {
           console.log('Resetting auction status to ACCEPTING_BID after new bid during countdown');
           updateAuctionStatus(id, 'ACCEPTING_BID');
         } else {
-          // For non-owners, update the local state for a responsive UI
           console.log('Locally resetting auction status for non-owners');
           setAuction(prevAuction => {
             if (prevAuction) {
@@ -465,7 +412,6 @@ const AuctionDetailsPage = () => {
           });
         }
         
-        // Clear any existing countdown timers
         if (bidPhaseTimer) {
           clearTimeout(bidPhaseTimer as unknown as number);
           setBidPhaseTimer(null);
@@ -473,14 +419,12 @@ const AuctionDetailsPage = () => {
         setBidPhaseCountdown(null);
       }
       
-      // Reset the phase timer since a new bid came in
       lastBidTime.current = new Date();
       setTimeSinceLastBid(0);
       startBidPhaseTimer();
     }
   };
 
-  // Handle bid submission
   const handlePlaceBid = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -491,7 +435,6 @@ const AuctionDetailsPage = () => {
     
     if (!auction || !id) return;
     
-    // Check if the current user is the auction owner
     const isOwner = typeof auction.user === 'string' 
       ? user._id === auction.user 
       : user._id === auction.user._id;
@@ -513,14 +456,7 @@ const AuctionDetailsPage = () => {
     try {
       const response = await auctionsAPI.placeBid(id, { amount: bidAmount });
       if (response.data.success) {
-        // Reset bid amount to the new minimum for the next bid
         setBidAmount(Number(response.data.auction.currentBid) + 1);
-        
-        // The API call succeeded, but we don't need to update UI immediately here
-        // Socket events will take care of the real-time updates for all users
-        
-        // Don't emit socket event from here since the backend now does it
-        // This prevents duplicate socket events and ensures all clients see the same updates
       } else {
         setBidError(response.data.error || 'Failed to place bid');
       }
@@ -531,27 +467,24 @@ const AuctionDetailsPage = () => {
     }
   };
 
-  // Add function to handle delete auction
   const handleDeleteAuction = async () => {
     if (!id) return;
     
     if (window.confirm('Are you sure you want to delete this auction?')) {
       try {
         await auctionsAPI.deleteAuction(id);
-        navigate('/profile'); // Redirect to profile after deletion
+        navigate('/profile');
       } catch (error: any) {
         setError(error.response?.data?.error || 'Failed to delete auction');
       }
     }
   };
 
-  // Add function to handle status change for SCHEDULED -> ACCEPTING_BID
   const handleStartAuction = async () => {
     if (!id) return;
     
     try {
       await auctionsAPI.updateStatus(id, { status: 'ACCEPTING_BID' });
-      // The socket updates will take care of updating the UI
     } catch (error: any) {
       setError(error.response?.data?.error || 'Failed to start auction');
     }
@@ -577,17 +510,14 @@ const AuctionDetailsPage = () => {
     );
   }
 
-  // Get category name
   const categoryName = typeof auction.category === 'string'
     ? auction.category
     : auction.category.name;
 
-  // Get seller name
   const sellerName = typeof auction.user === 'string'
     ? 'User'
     : auction.user.name;
 
-  // Format status for display
   const getStatusText = () => {
     switch (auction?.status) {
       case 'SCHEDULED':
@@ -607,7 +537,6 @@ const AuctionDetailsPage = () => {
     }
   };
 
-  // Get status color classes
   const getStatusClasses = () => {
     switch (auction?.status) {
       case 'SCHEDULED':
@@ -635,7 +564,6 @@ const AuctionDetailsPage = () => {
         </div>
       )}
       
-      {/* Fullscreen countdown overlay for Going Once and Going Twice */}
       {bidPhaseCountdown !== null && (auction?.status === 'GOING_ONCE' || auction?.status === 'GOING_TWICE') && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40 pointer-events-none">
           <div className="text-center">
@@ -671,7 +599,6 @@ const AuctionDetailsPage = () => {
         </div>
         
         <div className="md:flex">
-          {/* Left column: Images and description */}
           <div className="md:w-7/12 p-4">
             <div className={`relative pb-[75%] mb-4 rounded-lg overflow-hidden ${newBidAnimation ? 'ring-4 ring-green-500' : ''}`}>
               <img
@@ -686,7 +613,6 @@ const AuctionDetailsPage = () => {
                   </div>
                 </div>
               )}
-              {/* Overlay bid phase indicator on the image */}
               {(auction?.status === 'GOING_ONCE' || auction?.status === 'GOING_TWICE') && (
                 <div className="absolute top-2 right-2 bg-red-600 text-white font-bold px-3 py-2 rounded-lg animate-pulse opacity-90">
                   {auction.status === 'GOING_ONCE' ? 'Going Once!' : 'Going Twice!'} ({bidPhaseCountdown}s)
@@ -725,7 +651,6 @@ const AuctionDetailsPage = () => {
             </div>
           </div>
           
-          {/* Right column: Bid info and history */}
           <div className="md:w-5/12 p-4 border-l">
             <div className={`mb-6 ${newBidAnimation ? 'bid-flash p-3 rounded-lg' : ''}`}>
               <div className="flex justify-between items-center mb-2">
@@ -841,7 +766,6 @@ const AuctionDetailsPage = () => {
               </div>
             )}
             
-            {/* Bid history */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Bid History</h3>
               {bids.length === 0 ? (
@@ -876,7 +800,6 @@ const AuctionDetailsPage = () => {
               )}
             </div>
             
-            {/* Owner Actions - Only show if current user is the owner */}
             {isOwner && (
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-semibold mb-3">Owner Actions</h3>

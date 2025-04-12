@@ -22,31 +22,25 @@ const AuctionCard = ({
   const navigate = useNavigate();
   const [isDeleting, setIsDeleting] = useState(false);
   
-  // Get first image or use placeholder
   const imageUrl = auction.imageUrls && auction.imageUrls.length > 0
     ? auction.imageUrls[0]
     : 'https://via.placeholder.com/300x200';
   
-  // Format category name
   const categoryName = typeof auction.category === 'string'
     ? auction.category
     : auction.category.name;
     
-  // Calculate discount percentage or use the provided one
   const discountPercentage = auction.discount;
   
-  // Check if current user is owner of this auction
   const isOwner = user && user._id === (typeof auction.user === 'string' 
     ? auction.user 
     : auction.user._id);
   
-  // Check if current user won this auction
   const isWinner = user && auction.status === 'SOLD' && auction.winningUser && 
     (typeof auction.winningUser === 'string' 
       ? auction.winningUser === user._id 
       : auction.winningUser._id === user._id);
   
-  // Format status for display
   const statusText = () => {
     switch (auction.status) {
       case 'SCHEDULED':
@@ -66,7 +60,6 @@ const AuctionCard = ({
     }
   };
   
-  // Determine status color
   const statusColor = () => {
     switch (auction.status) {
       case 'SCHEDULED':

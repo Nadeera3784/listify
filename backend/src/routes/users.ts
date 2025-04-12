@@ -6,7 +6,6 @@ import { adminAuth } from '../middlewares/adminAuth';
 
 const router = express.Router();
 
-// Get all users (admin only)
 router.get('/', auth, adminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await User.find().select('-password');
@@ -17,7 +16,6 @@ router.get('/', auth, adminAuth, async (req: Request, res: Response): Promise<vo
   }
 });
 
-// Get user by id
 router.get('/:id', auth, async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.params.id).select('-password');
@@ -27,7 +25,6 @@ router.get('/:id', auth, async (req: Request, res: Response): Promise<void> => {
       return;
     }
     
-    // Only allow admins or the user themselves to access this
     if (req.user.id !== req.params.id && !req.user.isAdmin) {
       res.status(403).json({ success: false, error: 'Not authorized' });
       return;
@@ -40,20 +37,17 @@ router.get('/:id', auth, async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// Update user
 router.put('/:id', auth, [
   body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
   body('email').optional().isEmail().withMessage('Please include a valid email'),
   body('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean')
 ], async (req: Request, res: Response): Promise<void> => {
   try {
-    // Only allow admins or the user themselves to update
     if (req.user.id !== req.params.id && !req.user.isAdmin) {
       res.status(403).json({ success: false, error: 'Not authorized' });
       return;
     }
     
-    // Only allow admins to update isAdmin status
     if (!req.user.isAdmin && req.body.isAdmin !== undefined) {
       res.status(403).json({ success: false, error: 'Not authorized to change admin status' });
       return;
@@ -66,7 +60,6 @@ router.put('/:id', auth, [
       return;
     }
     
-    // Update fields
     if (req.body.name) user.name = req.body.name;
     if (req.body.email) user.email = req.body.email;
     if (req.body.isAdmin !== undefined && req.user.isAdmin) {
@@ -75,7 +68,6 @@ router.put('/:id', auth, [
     
     await user.save();
     
-    // Return updated user without password
     const updatedUser = await User.findById(req.params.id).select('-password');
     res.json({ success: true, user: updatedUser });
   } catch (error) {
@@ -84,7 +76,6 @@ router.put('/:id', auth, [
   }
 });
 
-// Delete user
 router.delete('/:id', auth, adminAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.params.id);

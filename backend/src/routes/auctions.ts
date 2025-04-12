@@ -1,31 +1,23 @@
 import express from 'express';
 import { body } from 'express-validator';
 import * as auctionController from '../controllers/auctionController';
-import { uploadAuctionImages } from '../controllers/uploadController';
 import { auth } from '../middlewares/auth';
-import { adminAuth } from '../middlewares/adminAuth';
 import upload from '../middlewares/upload';
 
 const router = express.Router();
 
-// Protected routes - require authentication
-// Get won auctions for current user
 router.get('/user/won', auth, auctionController.getWonAuctions);
 
-// Get won auctions for a specific user
+
 router.get('/user/:userId/won', auth, auctionController.getWonAuctions);
 
-// Public routes
-// Get all auctions with filtering
+
 router.get('/', auctionController.getAuctions);
 
-// Get single auction
 router.get('/:id', auctionController.getAuction);
 
-// Get bids for auction
 router.get('/:id/bids', auctionController.getAuctionBids);
 
-// Create auction with image uploads
 router.post(
   '/with-images',
   auth,
@@ -33,7 +25,6 @@ router.post(
   auctionController.createAuctionWithImages
 );
 
-// Create new auction
 router.post(
   '/',
   auth,
@@ -46,7 +37,6 @@ router.post(
   auctionController.createAuction
 );
 
-// Update auction
 router.put(
   '/:id',
   auth,
@@ -59,7 +49,6 @@ router.put(
   auctionController.updateAuction
 );
 
-// Update auction with image uploads
 router.put(
   '/:id/with-images',
   auth,
@@ -67,10 +56,8 @@ router.put(
   auctionController.updateAuctionWithImages
 );
 
-// Delete auction
 router.delete('/:id', auth, auctionController.deleteAuction);
 
-// Place bid on auction
 router.post(
   '/:id/bids',
   auth,
@@ -80,7 +67,6 @@ router.post(
   auctionController.placeBid
 );
 
-// Update auction status
 router.put(
   '/:id/status',
   auth,

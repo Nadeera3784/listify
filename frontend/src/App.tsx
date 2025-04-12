@@ -18,7 +18,6 @@ import NotFoundPage from './pages/NotFoundPage'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import './App.css'
 
-// Protected route component
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
   
@@ -29,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-// Admin route component
+
 const AdminRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
   

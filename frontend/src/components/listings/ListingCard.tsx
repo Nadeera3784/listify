@@ -16,17 +16,14 @@ const ListingCard = ({ listing, showActions = false, onDelete }: ListingCardProp
   const { user } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
   
-  // Get first image or use placeholder
   const imageUrl = listing.imageUrls && listing.imageUrls.length > 0
     ? listing.imageUrls[0]
     : 'https://via.placeholder.com/300x200';
   
-  // Format category name
   const categoryName = typeof listing.category === 'string'
     ? listing.category
     : listing.category.name;
     
-  // Check if the current user is the owner
   const isOwner = user && user._id === (typeof listing.user === 'string' ? listing.user : listing.user._id);
   
   const handleEdit = (e: React.MouseEvent) => {

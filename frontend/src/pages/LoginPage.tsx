@@ -12,7 +12,6 @@ const LoginPage = () => {
     await login(email, password);
   };
 
-  // If already logged in, redirect to home
   if (user) {
     return <Navigate to="/" />;
   }

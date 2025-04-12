@@ -69,15 +69,12 @@ const ListingDetailsPage = () => {
     );
   }
 
-  // Check if user is the owner of this listing
   const isOwner = user && user._id === (typeof listing.user === 'string' ? listing.user : listing.user._id);
   
-  // Get category name
   const categoryName = typeof listing.category === 'string'
     ? listing.category
     : listing.category.name;
 
-  // Get seller name
   const sellerName = typeof listing.user === 'string'
     ? 'User'
     : listing.user.name;

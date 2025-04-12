@@ -13,7 +13,6 @@ const RegisterPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    // Check if passwords match
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
@@ -23,7 +22,6 @@ const RegisterPage = () => {
     await register(name, email, password);
   };
 
-  // If already logged in, redirect to home
   if (user) {
     return <Navigate to="/" />;
   }

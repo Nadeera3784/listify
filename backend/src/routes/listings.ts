@@ -13,10 +13,8 @@ import upload from '../middlewares/upload';
 
 const router = express.Router();
 
-// Get all listings with filtering options
 router.get('/', getListings);
 
-// Create new listing
 router.post(
   '/',
   [
@@ -30,16 +28,12 @@ router.post(
   createListing
 );
 
-// Get listing by id
 router.get('/:id', getListingById);
 
-// Update listing
 router.put('/:id', auth, updateListing);
 
-// Delete listing
 router.delete('/:id', auth, deleteListing);
 
-// Add image to listing - single upload
 router.post(
   '/:id/image', 
   auth, 
@@ -47,11 +41,11 @@ router.post(
   uploadListingImages
 );
 
-// Add multiple images to listing
+
 router.post(
   '/:id/images', 
   auth, 
-  upload.array('images', 5), // Max 5 images at once
+  upload.array('images', 5), 
   uploadListingImages
 );
 

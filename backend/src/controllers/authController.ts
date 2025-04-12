@@ -3,9 +3,6 @@ import { validationResult } from 'express-validator';
 import User from '../models/User';
 import generateToken from '../utils/generateToken';
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -16,7 +13,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   const { name, email, password } = req.body;
 
   try {
-    // Check if user already exists
     const userExists = await User.findOne({ email });
 
     if (userExists) {
@@ -27,7 +23,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Create user
     const user = await User.create({
       name,
       email,
@@ -59,9 +54,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-// @desc    Login user & get token
-// @route   POST /api/auth/login
-// @access  Public
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -72,10 +64,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   try {
-    // Find user by email
     const user = await User.findOne({ email }).select('+password');
 
-    // Check if user exists and password matches
     if (user && (await user.matchPassword(password))) {
       res.json({
         success: true,
@@ -101,9 +91,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/me
-// @access  Private
 export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.user._id);

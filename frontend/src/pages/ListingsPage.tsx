@@ -27,7 +27,6 @@ const ListingsPage = () => {
     initialPage,
   });
   
-  // Update input value when search param changes (from header search)
   useEffect(() => {
     const searchFromParams = searchParams.get('search');
     if (searchFromParams) {
@@ -36,7 +35,6 @@ const ListingsPage = () => {
     }
   }, [searchParams]);
   
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -50,16 +48,14 @@ const ListingsPage = () => {
     fetchCategories();
   }, []);
   
-  // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('search', searchTerm);
     if (selectedCategory) params.set('category', selectedCategory);
-    params.set('page', '1'); // Reset to page 1 when filters change
+    params.set('page', '1');
     setSearchParams(params);
   }, [searchTerm, selectedCategory, setSearchParams]);
   
-  // Update URL when page changes
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     params.set('page', page.toString());
@@ -69,12 +65,12 @@ const ListingsPage = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchTerm(inputValue);
-    setPage(1); // Reset to page 1 when search changes
+    setPage(1);
   };
   
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(e.target.value);
-    setPage(1); // Reset to page 1 when category changes
+    setPage(1);
   };
   
   const handlePageChange = (newPage: number) => {

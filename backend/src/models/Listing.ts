@@ -63,7 +63,6 @@ const listingSchema = new mongoose.Schema<IListing>(
   }
 );
 
-// Add index for better search performance
 listingSchema.index({ title: 'text', description: 'text', location: 'text' });
 
 const Listing = mongoose.model<IListing>('Listing', listingSchema);

@@ -1,4 +1,3 @@
-// User types
 export interface User {
   _id: string;
   name: string;
@@ -7,14 +6,12 @@ export interface User {
   token?: string;
 }
 
-// Auth state types
 export interface AuthState {
   user: User | null;
   loading: boolean;
   error: string | null;
 }
 
-// Listing types
 export interface Listing {
   _id: string;
   title: string;
@@ -30,14 +27,12 @@ export interface Listing {
   updatedAt: string;
 }
 
-// Category types
 export interface Category {
   _id: string;
   name: string;
   slug: string;
 }
 
-// Auction types
 export interface Auction {
   _id: string;
   title: string;
@@ -55,7 +50,6 @@ export interface Auction {
   updatedAt: string;
 }
 
-// Bid types
 export interface Bid {
   _id: string;
   auction: string;
@@ -64,7 +58,6 @@ export interface Bid {
   createdAt: string;
 }
 
-// API response types
 export interface ApiResponse<T> {
   success: boolean;
   error?: string;

@@ -7,13 +7,12 @@
   color-scheme: light !important;
 }
 
-/* Force light theme for all elements */
 html, body, #root, .app {
   background-color: #ffffff !important;
   color: #213547 !important;
 }
 
-/* Force light theme for all inputs */
+
 input, textarea, select {
   background-color: #ffffff !important;
   color: #1f2937 !important;
@@ -25,14 +24,13 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
 }
 
-/* Force light theme for all cards, panels and containers */
+
 .card, .panel, .container, .bg-card {
   background-color: #ffffff !important;
   color: #213547 !important;
   border-color: #e5e7eb !important;
 }
 
-/* Force light theme for all text (with exceptions) */
 h1, h2, h3, h4, h5, h6, p, span:not([class*="bg-"]) {
   color: #213547 !important;
 }
@@ -42,7 +40,6 @@ button {
   color: inherit;
 }
 
-/* Link styling but allow exceptions */
 a:not([class*="bg-"]):not([class*="text-white"]) {
   color: #4f46e5;
 }
@@ -51,7 +48,6 @@ a:hover:not([class*="bg-"]):not([class*="text-white"]) {
   color: #4338ca;
 }
 
-/* Colored buttons/elements should keep their text color */
 [class*="bg-indigo-"], 
 [class*="bg-green-"], 
 [class*="bg-red-"],
@@ -61,18 +57,15 @@ a:hover:not([class*="bg-"]):not([class*="text-white"]) {
   color: white !important;
 }
 
-/* Fix pagination active button */
 button.bg-indigo-600 {
   color: white !important;
 }
 
-/* Force light theme for header and footer */
 header, footer {
   background-color: #ffffff !important;
   border-color: #e5e7eb !important;
 }
 
-/* Make sure dark mode never activates but preserves component colors */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: light !important;
@@ -83,7 +76,6 @@ header, footer {
     color: #213547 !important;
   }
   
-  /* Preserve button background colors in dark mode */
   .bg-indigo-600 {
     background-color: #4f46e5 !important;
     color: white !important;

@@ -34,7 +34,6 @@ const bidSchema = new mongoose.Schema<IBid>(
   }
 );
 
-// Ensure bid is unique for user and auction combination
 bidSchema.index({ auction: 1, user: 1, amount: 1 }, { unique: true });
 
 const Bid = mongoose.model<IBid>('Bid', bidSchema);

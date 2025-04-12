@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
-// Extend Express Request interface to include user
+
 declare global {
   namespace Express {
     interface Request {
@@ -13,7 +13,6 @@ declare global {
 
 export const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // Get token from header
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
@@ -21,10 +20,8 @@ export const auth = async (req: Request, res: Response, next: NextFunction): Pro
       return;
     }
     
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
     
-    // Get user from payload
     const user = await User.findById((decoded as any).id).select('-password');
     
     if (!user) {
@@ -32,7 +29,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction): Pro
       return;
     }
     
-    // Add user to request
     req.user = user;
     next();
   } catch (err) {
@@ -41,7 +37,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction): Pro
   }
 };
 
-// Admin middleware
 export const admin = (req: Request, res: Response, next: NextFunction): void => {
   if (req.user && req.user.isAdmin) {
     next();

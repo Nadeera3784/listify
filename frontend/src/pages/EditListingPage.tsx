@@ -34,20 +34,16 @@ const EditListingPage = () => {
   });
 
   useEffect(() => {
-    // Fetch categories and listing data
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch categories
         const categoriesResponse = await categoriesAPI.getCategories();
         setCategories(categoriesResponse.data.categories || []);
         
-        // Fetch listing data
         if (id) {
           const listingResponse = await listingsAPI.getListing(id);
           const listing = listingResponse.data.listing;
           
-          // Check if user is authorized to edit this listing
           if (user && (listing.user._id === user._id || user.isAdmin)) {
             setFormData({
               title: listing.title,
@@ -59,7 +55,6 @@ const EditListingPage = () => {
               condition: listing.condition || 'New'
             });
             
-            // Set existing images
             setExistingImages(listing.imageUrls || []);
           } else {
             setError('You are not authorized to edit this listing');
@@ -75,7 +70,6 @@ const EditListingPage = () => {
 
     fetchData();
     
-    // Cleanup function to revoke object URLs to avoid memory leaks
     return () => {
       previewUrls.forEach(url => URL.revokeObjectURL(url));
     };
@@ -93,7 +87,6 @@ const EditListingPage = () => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
       
-      // Create preview URLs for the selected files
       const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file));
       
       setSelectedFiles(prev => [...prev, ...newFiles]);
@@ -102,10 +95,8 @@ const EditListingPage = () => {
   };
 
   const removeFile = (index: number) => {
-    // Revoke the object URL to avoid memory leaks
     URL.revokeObjectURL(previewUrls[index]);
     
-    // Remove the file and its preview
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     setPreviewUrls(prev => prev.filter((_, i) => i !== index));
   };
@@ -138,7 +129,6 @@ const EditListingPage = () => {
         throw new Error('Please provide at least one image');
       }
       
-      // Update listing data
       const listingData = {
         title: formData.title,
         description: formData.description,
@@ -150,10 +140,8 @@ const EditListingPage = () => {
         imageUrls: existingImages
       };
       
-      // Update listing
       await listingsAPI.updateListing(id, listingData);
       
-      // Upload new images if there are any
       if (selectedFiles.length > 0) {
         const formData = new FormData();
         selectedFiles.forEach(file => {
@@ -337,7 +325,6 @@ const EditListingPage = () => {
           
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Existing images */}
               {existingImages.map((url, index) => (
                 <div key={`existing-${index}`} className="relative group">
                   <img 
@@ -377,7 +364,6 @@ const EditListingPage = () => {
                 </div>
               ))}
               
-              {/* Add image button */}
               <button
                 type="button"
                 onClick={triggerFileInput}

@@ -30,7 +30,6 @@ const CreateListingPage = () => {
   });
 
   useEffect(() => {
-    // Fetch categories
     const fetchCategories = async () => {
       try {
         const response = await categoriesAPI.getCategories();
@@ -42,7 +41,6 @@ const CreateListingPage = () => {
 
     fetchCategories();
     
-    // Cleanup function to revoke object URLs to avoid memory leaks
     return () => {
       previewUrls.forEach(url => URL.revokeObjectURL(url));
     };
@@ -60,7 +58,6 @@ const CreateListingPage = () => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
       
-      // Create preview URLs for the selected files
       const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file));
       
       setSelectedFiles(prev => [...prev, ...newFiles]);
@@ -69,10 +66,8 @@ const CreateListingPage = () => {
   };
 
   const removeFile = (index: number) => {
-    // Revoke the object URL to avoid memory leaks
     URL.revokeObjectURL(previewUrls[index]);
     
-    // Remove the file and its preview
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
     setPreviewUrls(prev => prev.filter((_, i) => i !== index));
   };
@@ -87,12 +82,10 @@ const CreateListingPage = () => {
     setError(null);
 
     try {
-      // Validate form
       if (!formData.title || !formData.description || !formData.price || !formData.location || !formData.category || selectedFiles.length === 0) {
         throw new Error('Please fill in all required fields and provide at least one image');
       }
       
-      // Create listing first
       const listingData = {
         title: formData.title,
         description: formData.description,
@@ -101,14 +94,12 @@ const CreateListingPage = () => {
         phoneNumber: formData.phoneNumber,
         category: formData.category,
         condition: formData.condition,
-        imageUrls: [] // Empty array initially, we'll upload images separately
+        imageUrls: []
       };
       
-      // Submit listing data to API
       const response = await listingsAPI.createListing(listingData);
       const listingId = response.data.listing._id;
       
-      // Upload images if there are any
       if (selectedFiles.length > 0) {
         const formData = new FormData();
         selectedFiles.forEach(file => {
@@ -118,7 +109,6 @@ const CreateListingPage = () => {
         await listingsAPI.uploadImages(listingId, formData);
       }
       
-      // Redirect to the new listing page
       navigate(`/listing/${listingId}`);
     } catch (error: any) {
       setError(error.response?.data?.error || error.message || 'Failed to create listing');

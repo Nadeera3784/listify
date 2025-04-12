@@ -5,10 +5,9 @@ import Category from '../models/Category';
 import Listing from '../models/Listing';
 import Auction from '../models/Auction';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
+
 const connectDB = async () => {
   try {
     mongoose.set('strictQuery', false);
@@ -75,71 +74,6 @@ const importData = async () => {
     // Create categories
     const createdCategories = await Category.insertMany(categories);
     console.log('Categories created');
-    
-    // Create sample listings
-    const sampleListings = [
-      {
-        title: 'Vintage Leather Sofa',
-        description: 'Beautiful vintage leather sofa in excellent condition',
-        price: 350,
-        location: 'San Francisco, CA',
-        imageUrls: ['/uploads/sofa.jpg'],
-        category: createdCategories[1]._id, // Furniture
-        user: createdUsers[1]._id, // John Doe
-      },
-      {
-        title: 'iPhone 13 Pro',
-        description: 'Like new iPhone 13 Pro, 256GB, Pacific Blue',
-        price: 799,
-        location: 'New York, NY',
-        imageUrls: ['/uploads/iphone.jpg'],
-        category: createdCategories[0]._id, // Electronics
-        user: createdUsers[2]._id, // Jane Smith
-      },
-      {
-        title: 'Mountain Bike',
-        description: 'Trek mountain bike, medium frame, great condition',
-        price: 450,
-        location: 'Denver, CO',
-        imageUrls: ['/uploads/bike.jpg'],
-        category: createdCategories[3]._id, // Sports
-        user: createdUsers[1]._id, // John Doe
-      }
-    ];
-    
-    const createdListings = await Listing.insertMany(sampleListings);
-    console.log('Listings created');
-    
-    // Create sample auctions
-    const sampleAuctions = [
-      {
-        title: 'Vintage Native American Ring',
-        description: 'Beautiful handcrafted Native American ring with turquoise stone',
-        imageUrls: ['/uploads/ring.jpg'],
-        startingBid: 5,
-        currentBid: 9,
-        numberOfBids: 8,
-        status: 'ACCEPTING_BID',
-        discount: 0,
-        category: createdCategories[6]._id, // Other
-        user: createdUsers[1]._id, // John Doe
-      },
-      {
-        title: 'Louis Vuitton Handbag',
-        description: 'Authentic Louis Vuitton handbag, gently used',
-        imageUrls: ['/uploads/handbag.jpg'],
-        startingBid: 20,
-        currentBid: 32,
-        numberOfBids: 25,
-        status: 'ACCEPTING_BID',
-        discount: 96,
-        category: createdCategories[2]._id, // Clothing
-        user: createdUsers[2]._id, // Jane Smith
-      }
-    ];
-    
-    await Auction.insertMany(sampleAuctions);
-    console.log('Auctions created');
     
     console.log('Data import complete!');
     process.exit();

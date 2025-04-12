@@ -91,7 +91,6 @@ const auctionSchema = new mongoose.Schema<IAuction>(
   }
 );
 
-// Add index for better search performance
 auctionSchema.index({ title: 'text', description: 'text' });
 
 const Auction = mongoose.model<IAuction>('Auction', auctionSchema);
